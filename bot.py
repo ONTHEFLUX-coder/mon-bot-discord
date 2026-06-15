@@ -13,9 +13,18 @@ async def on_ready():
 
 @bot.event
 async def on_member_join(member):
-    channel = discord.utils.get(member.guild.channels, name="arrivées🛬")
+    channel_arrivees = discord.utils.get(member.guild.channels, name="arrivées🛬")
+    if channel_arrivees:
+        await channel_arrivees.send(f"Bienvenue {member.mention} sur le serveur !")
+
+    channel_general = discord.utils.get(member.guild.channels, name="💬-général")
+    if channel_general:
+        await channel_general.send(f"{member.mention} a rejoint le serveur ! Nous sommes maintenant **{member.guild.member_count}** membres !")
+@bot.event
+async def on_member_remove(member):
+    channel = discord.utils.get(member.guild.channels, name="départs🛫")
     if channel:
-        await channel.send(f"Bienvenue {member.mention} sur le serveur !")
+        await channel.send(f"**{member.name}** a quitté le serveur.")
 
 @bot.command()
 @commands.has_permissions(manage_messages=True)
@@ -59,6 +68,15 @@ async def setup_ticket(ctx):
     )
     await salon.send(embed=embed, view=TicketButton())
     await ctx.send("✅ Message de ticket envoyé !", delete_after=3)
-
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def fermer(ctx):
+    if "ticket-" in ctx.channel.name:
+        await ctx.send("🔒 Ticket fermé, suppression dans 5 secondes...")
+        import asyncio
+        await asyncio.sleep(5)
+        await ctx.channel.delete()
+    else:
+        await ctx.send("❌ Cette commande ne peut être utilisée que dans un ticket !")
 import os
 bot.run(os.environ.get("TOKEN"))

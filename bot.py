@@ -13,9 +13,9 @@ async def on_ready():
 
 @bot.event
 async def on_member_join(member):
-    channel = discord.utils.get(member.guild.channels, name="accueil")
+    channel = discord.utils.get(member.guild.channels, name="arrivées🛬")
     if channel:
-        await channel.send(f"Bienvenue {member.mention} sur le serveur ! 🎉")
+        await channel.send(f"Bienvenue {member.mention} sur le serveur !")
 
 @bot.command()
 @commands.has_permissions(manage_messages=True)

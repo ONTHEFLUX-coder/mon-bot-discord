@@ -84,5 +84,39 @@ async def fermer(ctx):
         await ctx.channel.delete()
     else:
         await ctx.send("❌ Cette commande ne peut être utilisée que dans un ticket !")
+
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def setup_reglement(ctx):
+    salon = discord.utils.get(ctx.guild.channels, name="rules")
+    embed = discord.Embed(
+        title="🏰 Bienvenue sur Clover 🏰",
+        description="""Ici, tout le monde commence au rang Class C. Plus tu es actif et impliqué dans le serveur, plus tu as de chances de monter en grade.
+
+📈 **Comment évoluer ?**
+🟢 **Class C** → Rang de départ pour tous les nouveaux membres.
+🟡 **Class B** → Accessible aux membres qui se démarquent par leur activité.
+🔵 **Class A** → Nécessite l'accord d'au moins 1 Class S.
+🟣 **Semi Class S** → Nécessite l'accord d'au moins 2 Class S.
+🔴 **Class S** → Rang d'élite réservé aux membres les plus méritants, les plus actifs et les plus respectés du serveur.
+👑 **Empereur Mage** → Le plus haut rang de Clover. Seul l'Empereur Mage peut décider qui est digne de rejoindre ce rang.
+
+⚠️ Les places dans les hauts rangs sont limitées afin de conserver leur prestige. Cependant, à mesure que le serveur grandira, davantage de places pourront être ouvertes.
+
+✅ **Clique sur la réaction ci-dessous pour accéder au serveur !**""",
+        color=discord.Color.gold()
+    )
+    embed.set_image(url="https://i.imgur.com/h23tiKP.jpeg")
+    message = await salon.send(embed=embed)
+    await message.add_reaction("✅")
+
+@bot.event
+async def on_raw_reaction_add(payload):
+    if payload.emoji.name == "✅":
+        guild = bot.get_guild(payload.guild_id)
+        role = discord.utils.get(guild.roles, name="Class D")
+        member = guild.get_member(payload.user_id)
+        if role and member and not member.bot:
+            await member.add_roles(role)
 import os
 bot.run(os.environ.get("TOKEN"))

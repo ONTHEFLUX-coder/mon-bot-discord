@@ -108,5 +108,34 @@ async def setup_reglement(ctx):
     embed.set_image(url="https://i.imgur.com/h23tiKP.jpeg")
     await salon.send(embed=embed)
     
+@bot.event
+async def on_member_update(before, after):
+    roles_surveilles = ["Class D", "Class C", "Class B", "Class A", "Semi Class S", "Class S", "Empreur mage👑"]
+    
+    if before.roles != after.roles:
+        salon = discord.utils.get(after.guild.channels, name="📈rôles")
+        if salon:
+            roles_avant = set(before.roles)
+            roles_apres = set(after.roles)
+            
+            roles_ajoutes = roles_apres - roles_avant
+            roles_retires = roles_avant - roles_apres
+            
+            for role in roles_ajoutes:
+                if role.name in roles_surveilles:
+                    embed = discord.Embed(
+                        description=f"⬆️ {after.mention} a obtenu le rôle **{role.name}**",
+                        color=discord.Color.green()
+                    )
+                    await salon.send(embed=embed)
+            
+            for role in roles_retires:
+                if role.name in roles_surveilles:
+                    embed = discord.Embed(
+                        description=f"⬇️ {after.mention} a perdu le rôle **{role.name}**",
+                        color=discord.Color.red()
+                    )
+                    await salon.send(embed=embed)
+                    
 import os
 bot.run(os.environ.get("TOKEN"))

@@ -110,32 +110,35 @@ async def setup_reglement(ctx):
     
 @bot.event
 async def on_member_update(before, after):
-    roles_surveilles = ["Class D", "Class C", "Class B", "Class A", "Semi Class S", "Class S", "Empreur mage👑"]
+    hierarchie = ["Class D", "Class C", "Class B", "Class A", "Semi Class S", "Class S", "Empreur mage👑"]
     
     if before.roles != after.roles:
         salon = discord.utils.get(after.guild.channels, name="📈rôles")
-        if salon:
-            roles_avant = set(before.roles)
-            roles_apres = set(after.roles)
-            
-            roles_ajoutes = roles_apres - roles_avant
-            roles_retires = roles_avant - roles_apres
-            
-            for role in roles_ajoutes:
-                if role.name in roles_surveilles:
+        if not salon:
+            return
+        
+        roles_avant = set(r.name for r in before.roles if r.name in hierarchie)
+        roles_apres = set(r.name for r in after.roles if r.name in hierarchie)
+        
+        roles_ajoutes = roles_apres - roles_avant
+        roles_retires = roles_avant - roles_apres
+        
+        for role_obtenu in roles_ajoutes:
+            for role_perdu in roles_retires:
+                index_avant = hierarchie.index(role_perdu)
+                index_apres = hierarchie.index(role_obtenu)
+                
+                if index_apres > index_avant:
                     embed = discord.Embed(
-                        description=f"⬆️ {after.mention} a obtenu le rôle **{role.name}**",
+                        description=f"🎉 Félicitations {after.mention} ! Tu es passé(e) de **{role_perdu}** à **{role_obtenu}** !",
                         color=discord.Color.green()
                     )
-                    await salon.send(embed=embed)
-            
-            for role in roles_retires:
-                if role.name in roles_surveilles:
+                else:
                     embed = discord.Embed(
-                        description=f"⬇️ {after.mention} a perdu le rôle **{role.name}**",
+                        description=f"💔 Dommage {after.mention}, tu es passé(e) de **{role_perdu}** à **{role_obtenu}**.",
                         color=discord.Color.red()
                     )
-                    await salon.send(embed=embed)
+                await salon.send(embed=embed)
                     
 import os
 bot.run(os.environ.get("TOKEN"))

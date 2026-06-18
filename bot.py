@@ -16,15 +16,11 @@ async def on_member_join(member):
     channel_arrivees = discord.utils.get(member.guild.channels, name="arrivées🛬")
     if channel_arrivees:
         embed = discord.Embed(
-            description=f"Bienvenue {member.mention} sur le serveur !",
+            description=f"Bienvenue {member.mention} sur le serveur ! 🎉\nNous sommes maintenant **{member.guild.member_count}** membres !",
             color=discord.Color.green()
         )
         embed.set_thumbnail(url=member.display_avatar.url)
-        await channel_arrivees.send("@everyone", embed=embed)
-
-    channel_general = discord.utils.get(member.guild.channels, name="💬-général")
-    if channel_general:
-        await channel_general.send(f"{member.mention} a rejoint le serveur ! Nous sommes maintenant **{member.guild.member_count}** membres !")
+        await channel_arrivees.send(embed=embed)
     
 @bot.event
 async def on_member_remove(member):

@@ -135,6 +135,11 @@ async def on_member_update(before, after):
                         color=discord.Color.red()
                     )
                 await salon.send(embed=embed)
+                
+@bot.command()
+async def ngl(ctx):
+    if ctx.channel.name == "👀-messages-anonymes":
+        await ctx.send("https://ngl.link/enevo95")
                     
 import os
 bot.run(os.environ.get("TOKEN"))

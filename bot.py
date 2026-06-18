@@ -140,6 +140,34 @@ async def on_member_update(before, after):
 async def ngl(ctx):
     if ctx.channel.name == "👀-messages-anonymes":
         await ctx.send("https://ngl.link/enevo95")
+
+@bot.command()
+async def avatar(ctx, membre: discord.Member = None):
+    if membre is None:
+        membre = ctx.author
+    embed = discord.Embed(
+        title=f"Avatar de {membre.name}",
+        color=discord.Color.blurple()
+    )
+    embed.set_image(url=membre.display_avatar.url)
+    embed.add_field(name="Lien", value=f"[Clique ici]({membre.display_avatar.url})")
+    await ctx.send(embed=embed)
+
+@bot.command()
+async def banner(ctx, membre: discord.Member = None):
+    if membre is None:
+        membre = ctx.author
+    user = await bot.fetch_user(membre.id)
+    if user.banner:
+        embed = discord.Embed(
+            title=f"Bannière de {membre.name}",
+            color=discord.Color.blurple()
+        )
+        embed.set_image(url=user.banner.url)
+        embed.add_field(name="Lien", value=f"[Clique ici]({user.banner.url})")
+        await ctx.send(embed=embed)
+    else:
+        await ctx.send(f"❌ {membre.name} n'a pas de bannière !")
                     
 import os
 bot.run(os.environ.get("TOKEN"))

@@ -168,6 +168,47 @@ async def banner(ctx, membre: discord.Member = None):
         await ctx.send(embed=embed)
     else:
         await ctx.send(f"❌ {membre.name} n'a pas de bannière !")
+
+@bot.event
+async def on_voice_state_update(member, before, after):
+    salon = discord.utils.get(member.guild.channels, name="logs-vocaux")
+    if not salon:
+        return
+
+    import asyncio
+    await asyncio.sleep(1)
+
+    # Mute serveur
+    if before.mute != after.mute:
+        moderateur = "Inconnu"
+        async for entry in member.guild.audit_logs(limit=1, action=discord.AuditLogAction.member_update):
+            if entry.target.id == member.id:
+                moderateur = entry.user.mention
+        if after.mute:
+            embed = discord.Embed(description=f"🔇 {member.mention} a été **mis en sourdine** par {moderateur}", color=discord.Color.red())
+        else:
+            embed = discord.Embed(description=f"🔊 {member.mention} a été **retiré de la sourdine** par {moderateur}", color=discord.Color.green())
+        await salon.send(embed=embed)
+
+    # Deaf serveur
+    if before.deaf != after.deaf:
+        moderateur = "Inconnu"
+        async for entry in member.guild.audit_logs(limit=1, action=discord.AuditLogAction.member_update):
+            if entry.target.id == member.id:
+                moderateur = entry.user.mention
+        if after.deaf:
+            embed = discord.Embed(description=f"🙉 {member.mention} a été **rendu sourd** par {moderateur}", color=discord.Color.red())
+        else:
+            embed = discord.Embed(description=f"👂 {member.mention} a été **retiré de la surdité** par {moderateur}", color=discord.Color.green())
+        await salon.send(embed=embed)
+
+    # Déplacement
+    if before.channel and after.channel and before.channel != after.channel:
+        moderateur = "Inconnu"
+        async for entry in member.guild.audit_logs(limit=1, action=discord.AuditLogAction.member_move):
+            moderateur = entry.user.mention
+        embed = discord.Embed(description=f"➡️ {member.mention} a été **déplacé** de **{before.channel.name}** vers **{after.channel.name}** par {moderateur}", color=discord.Color.blue())
+        await salon.send(embed=embed)
                     
 import os
 bot.run(os.environ.get("TOKEN"))

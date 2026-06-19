@@ -209,6 +209,34 @@ async def on_voice_state_update(member, before, after):
             moderateur = entry.user.mention
         embed = discord.Embed(description=f"➡️ {member.mention} a été **déplacé** de **{before.channel.name}** vers **{after.channel.name}** par {moderateur}", color=discord.Color.blue())
         await salon.send(embed=embed)
+
+@bot.command()
+@commands.has_permissions(ban_members=True)
+async def deban(ctx, user_id: int):
+    user = await bot.fetch_user(user_id)
+    await ctx.guild.unban(user)
+    await ctx.send(f"✅ {user.name} a été débanni !")
+
+@bot.command()
+@commands.has_permissions(manage_roles=True)
+async def mute(ctx, membre: discord.Member, *, raison="Aucune raison donnée"):
+    role_mute = discord.utils.get(ctx.guild.roles, name="Muted")
+    if not role_mute:
+        role_mute = await ctx.guild.create_role(name="Muted")
+        for channel in ctx.guild.channels:
+            await channel.set_permissions(role_mute, send_messages=False, speak=False)
+    await membre.add_roles(role_mute)
+    await ctx.send(f"🔇 {membre.mention} a été mute. Raison : {raison}")
+
+@bot.command()
+@commands.has_permissions(manage_roles=True)
+async def unmute(ctx, membre: discord.Member):
+    role_mute = discord.utils.get(ctx.guild.roles, name="Muted")
+    if role_mute in membre.roles:
+        await membre.remove_roles(role_mute)
+        await ctx.send(f"🔊 {membre.mention} a été unmute !")
+    else:
+        await ctx.send(f"❌ {membre.mention} n'est pas mute !")
                     
 import os
 bot.run(os.environ.get("TOKEN"))

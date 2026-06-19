@@ -9,6 +9,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
 async def on_ready():
+    bot.add_view(TicketButton())
     print(f"✅ {bot.user} est connecté !")
 
 @bot.event
@@ -42,9 +43,9 @@ async def ban(ctx, membre: discord.Member, *, raison="Aucune raison donnée"):
 
 class TicketButton(discord.ui.View):
     def __init__(self):
-        super().__init__(timeout=None)
+        super().__init__(timeout=None, custom_id="ticket_button")
 
-    @discord.ui.button(label="Ouvrir un ticket", emoji="🎫", style=discord.ButtonStyle.secondary)
+    @discord.ui.button(label="Ouvrir un ticket", emoji="🎫", style=discord.ButtonStyle.secondary, custom_id="open_ticket")
     async def open_ticket(self, interaction: discord.Interaction, button: discord.ui.Button):
         guild = interaction.guild
         overwrites = {
@@ -56,7 +57,7 @@ class TicketButton(discord.ui.View):
             f"ticket-{interaction.user.name}",
             overwrites=overwrites
         )
-        await channel.send(f"{interaction.user.mention} Ton ticket est ouvert ! Un membre du support va t'aider.")
+        await channel.send(f"{interaction.user.mention} Ton ticket est ouvert ! 🎫")
         await interaction.response.send_message(f"✅ Ticket créé : {channel.mention}", ephemeral=True)
 
 @bot.command()

@@ -43,7 +43,7 @@ async def ban(ctx, membre: discord.Member, *, raison="Aucune raison donnée"):
 
 class TicketButton(discord.ui.View):
     def __init__(self):
-        super().__init__(timeout=None, custom_id="ticket_button")
+        super().__init__(timeout=None)
 
     @discord.ui.button(label="Ouvrir un ticket", emoji="🎫", style=discord.ButtonStyle.secondary, custom_id="open_ticket")
     async def open_ticket(self, interaction: discord.Interaction, button: discord.ui.Button):

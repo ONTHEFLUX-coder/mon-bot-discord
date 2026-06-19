@@ -197,9 +197,9 @@ async def on_voice_state_update(member, before, after):
             if entry.target.id == member.id:
                 moderateur = entry.user.mention
         if after.deaf:
-            embed = discord.Embed(description=f"🙉 {member.mention} a été **rendu sourd** par {moderateur}", color=discord.Color.red())
+            embed = discord.Embed(description=f"🙉 {member.mention} a été **mute** par {moderateur}", color=discord.Color.red())
         else:
-            embed = discord.Embed(description=f"👂 {member.mention} a été **retiré de la surdité** par {moderateur}", color=discord.Color.green())
+            embed = discord.Embed(description=f"👂 {member.mention} a été **demute** par {moderateur}", color=discord.Color.green())
         await salon.send(embed=embed)
 
     # Déplacement

@@ -205,16 +205,16 @@ async def on_voice_state_update(member, before, after):
 
     # Déplacement
   if before.channel and after.channel and before.channel != after.channel:
-    moderateur = None
-    async for entry in member.guild.audit_logs(limit=1, action=discord.AuditLogAction.member_move):
-        if entry.target.id == member.id:
-            moderateur = entry.user
-    if moderateur and moderateur.id != member.id:
-        embed = discord.Embed(
-            description=f"➡️ {member.mention} a été **déplacé** de **{before.channel.name}** vers **{after.channel.name}** par {moderateur.mention}",
-            color=discord.Color.blue()
-        )
-        await salon.send(embed=embed)
+            moderateur = None
+            async for entry in member.guild.audit_logs(limit=1, action=discord.AuditLogAction.member_move):
+                if entry.target.id == member.id:
+                    moderateur = entry.user
+            if moderateur and moderateur.id != member.id:
+                embed = discord.Embed(
+                    description=f"➡️ {member.mention} a été **déplacé** de **{before.channel.name}** vers **{after.channel.name}** par {moderateur.mention}",
+                    color=discord.Color.blue()
+                )
+                await salon.send(embed=embed)
 
 @bot.command()
 @commands.has_permissions(ban_members=True)

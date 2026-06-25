@@ -210,7 +210,7 @@ async def on_voice_state_update(member, before, after):
     if before.channel and after.channel and before.channel != after.channel:
             moderateur = None
             await asyncio.sleep(1)
-            $async for entry in member.guild.audit_logs(limit=1, action=discord.AuditLogAction.member_move):
+            async for entry in member.guild.audit_logs(limit=1, action=discord.AuditLogAction.member_move):
                 if entry.target.id == member.id:
                     moderateur = entry.user
             if moderateur and moderateur.id != member.id:

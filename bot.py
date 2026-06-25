@@ -214,8 +214,7 @@ async def on_voice_state_update(member, before, after):
                 embed = discord.Embed(
                     description=f"➡️ {member.mention} a été **déplacé** de **{before.channel.name}** vers **{after.channel.name}** par {moderateur.mention}",
                     color=discord.Color.blue()
-                )
-                await salon.send(embed=embed)
+                ) await salon.send(embed=embed)
 
 @bot.command()
 @commands.has_permissions(ban_members=True)
